@@ -45,6 +45,52 @@
         <button class="withdrawal" onclick="showWithdrawalPage()">Withdrawal</button>
     </div>
     
+    <div class="container hidden" id="transaction-dashboard">
+        <h2>Transaction History</h2>
+        <ul id="transaction-list"></ul>
+        <button onclick="goBackToDashboard()">Back</button>
+    </div>
+    
+    <script>
+        function showTransactionDashboard() {
+            document.getElementById("dashboard").classList.add("hidden");
+            document.getElementById("transaction-dashboard").classList.remove("hidden");
+        }
+        function goBackToDashboard() {
+            document.getElementById("transaction-dashboard").classList.add("hidden");
+            document.getElementById("dashboard").classList.remove("hidden");
+        }
+        function loadTransactions() {
+            const transactions = [
+                "KES.200.00 -----SENT -----0712345678----- SUCCESS",
+                "KES.500.00 -----SENT -----0123456789----- SUCCESS",
+                "KES.1,000.00 -----SENT -----0711122233----- SUCCESS",
+                "KES.2,000.00 -----SENT -----0723456789----- SUCCESS",
+                "KES.3,500.00 -----SENT -----0734567890----- SUCCESS",
+                "KES.4,000.00 -----SENT -----0745678901----- SUCCESS",
+                "KES.5,000.00 -----SENT -----0756789012----- SUCCESS",
+                "KES.6,000.00 -----SENT -----0767890123----- SUCCESS",
+                "KES.7,000.00 -----SENT -----0778901234----- SUCCESS",
+                "KES.8,500.00 -----SENT -----0789012345----- SUCCESS",
+                "KES.9,000.00 -----SENT -----0790123456----- SUCCESS",
+                "KES.10,000.00 -----SENT -----0711223344----- SUCCESS",
+                "KES.11,000.00 -----SENT -----0722334455----- SUCCESS",
+                "KES.12,500.00 -----SENT -----0733445566----- SUCCESS",
+                "KES.13,000.00 -----SENT -----0744556677----- SUCCESS",
+                "KES.14,000.00 -----SENT -----0755667788----- SUCCESS",
+                "KES.15,500.00 -----SENT -----0766778899----- SUCCESS",
+                "KES.16,000.00 -----SENT -----0777889900----- SUCCESS",
+                "KES.17,500.00 -----SENT -----0788990011----- SUCCESS",
+                "KES.18,000.00 -----SENT -----0799001122----- SUCCESS"
+            ];
+            
+            const transactionList = document.getElementById("transaction-list");
+            transactionList.innerHTML = "";
+            transactions.forEach(transaction => {
+                let listItem = document.createElement("li");
+                listItem.textContent = transaction;
+                transactionList.appendChild(listItem)
+                
     <div class="container hidden" id="withdrawal-page">
         <h2>Select Transfer Method</h2>
         <button onclick="showMpesaPage()">Mpesa</button>
@@ -52,12 +98,7 @@
         <button onclick="alert('Paypal transfer is not available yet')">Paypal</button>
     </div>
 
-    <div class="container hidden" id="dashboard">
-        <h2>transaction-history</h2>
-        <button onclick="show transaction-history()">details</button>
-        <button onclick="alert('Full transaction-history')">details</button>
-        <button onclick="alert('Document sent to Your Email successfully')">document/button>
-    </div>
+    
     
     <div class="container hidden" id="mpesa-page">
         <h2>Mpesa Transfer</h2>
