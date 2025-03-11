@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cash Way - Account Dashboard</title>
+    <title>Account Dashboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -37,57 +37,44 @@
     </style>
 </head>
 <body>
-    <!-- Account Dashboard -->
     <div class="container" id="dashboard">
         <h2>Account Dashboard</h2>
         <h3>Account Holder: Jacob Amaitsa</h3>
         <h3>Current Balance: <span id="balance">664,086.73</span> KES</h3>
         <button class="deposit" onclick="depositMoney()">Deposit</button>
         <button class="withdrawal" onclick="showWithdrawalPage()">Withdrawal</button>
+        <button onclick="showTransactionHistory()">Transaction History</button>
     </div>
-
-    <!-- Loan & Services Dashboard (ONLY on first page) -->
-    <div class="container" id="loan-services" style="background: linear-gradient(to right, purple, blue); color: white;">
-        <h2>Loan & Services</h2>
-        <button>Personal Loan</button>
-        <button>Business Loan</button>
-        <button>Car Loan</button>
-        <button>Mortgage Loan</button>
-    </div>
-
-    <!-- Transaction History Dashboard -->
-    <div class="container hidden" id="transaction-dashboard">
-        <h2>Transaction History</h2>
-        <ul id="transaction-list">
-            <li>KES.200.00 ----- SENT ----- 0712345678 ----- SUCCESS</li>
-            <li>KES.1,000.00 ----- SENT ----- 0700111222 ----- SUCCESS</li>
-            <li>KES.500.00 ----- SENT ----- 0722333444 ----- SUCCESS</li>
-            <li>KES.5,000.00 ----- SENT ----- 0733444555 ----- SUCCESS</li>
-            <li>KES.300.00 ----- SENT ----- 0744555666 ----- SUCCESS</li>
-            <li>KES.2,000.00 ----- SENT ----- 0755666777 ----- SUCCESS</li>
-            <li>KES.800.00 ----- SENT ----- 0766777888 ----- SUCCESS</li>
-            <li>KES.1,500.00 ----- SENT ----- 0777888999 ----- SUCCESS</li>
-            <li>KES.400.00 ----- SENT ----- 0788999000 ----- SUCCESS</li>
-            <li>KES.6,000.00 ----- SENT ----- 0799000111 ----- SUCCESS</li>
-            <li>KES.900.00 ----- SENT ----- 0711222333 ----- SUCCESS</li>
-            <li>KES.7,500.00 ----- SENT ----- 0722333444 ----- SUCCESS</li>
-            <li>KES.3,500.00 ----- SENT ----- 0733444555 ----- SUCCESS</li>
-            <li>KES.250.00 ----- SENT ----- 0744555666 ----- SUCCESS</li>
-            <li>KES.4,500.00 ----- SENT ----- 0755666777 ----- SUCCESS</li>
-            <li>KES.600.00 ----- SENT ----- 0766777888 ----- SUCCESS</li>
-            <li>KES.3,000.00 ----- SENT ----- 0777888999 ----- SUCCESS</li>
-            <li>KES.1,200.00 ----- SENT ----- 0788999000 ----- SUCCESS</li>
-            <li>KES.2,800.00 ----- SENT ----- 0799000111 ----- SUCCESS</li>
-            <li>KES.5,200.00 ----- SENT ----- 0711222333 ----- SUCCESS</li>
-        </ul>
+    
+    <div class="container hidden" id="withdrawal-page">
+        <h2>Select Transfer Method</h2>
+        <button onclick="showMpesaPage()">Mpesa</button>
+        <button onclick="alert('Bank transfer is not available yet')">Bank</button>
+        <button onclick="alert('Paypal transfer is not available yet')">Paypal</button>
         <button onclick="goBackToDashboard()">Back</button>
     </div>
 
-    <!-- Footer -->
-    <div style="text-align: center; padding: 20px; font-weight: bold;">
-        2025 RESERVED - REGULATED BY THE NATIONAL BANK OF AMERICA
+    <div class="container hidden" id="transaction-history">
+        <h2>Transaction History</h2>
+        <ul id="history-list"></ul>
+        <button onclick="alert('Document sent to Your Email successfully')">Download Statement</button>
+        <button onclick="goBackToDashboard()">Back</button>
     </div>
 
+    <div class="container hidden" id="mpesa-page">
+        <h2>Mpesa Transfer</h2>
+        <input type="text" id="mpesa-number" placeholder="0712345678" required>
+        <input type="number" id="mpesa-amount" placeholder="Amount (1000 - 5000000 KES)" required>
+        <button onclick="submitMpesa()">Submit</button>
+        <button onclick="goBackToWithdrawal()">Back</button>
+    </div>
+    
+    <div class="container hidden" id="success-page">
+        <h2>✔</h2>
+        <h3 id="success-message"></h3>
+        <button onclick="goBackToDashboard()">Go Back</button>
+    </div>
+    
     <script>
         let balance = 664086.73;
         function formatNumber(num) {
@@ -98,13 +85,41 @@
         }
         function showWithdrawalPage() {
             document.getElementById("dashboard").classList.add("hidden");
-            document.getElementById("transaction-dashboard").classList.remove("hidden");
-            document.getElementById("loan-services").classList.add("hidden"); // Hide Loan & Services when navigating
+            document.getElementById("withdrawal-page").classList.remove("hidden");
+        }
+        function showMpesaPage() {
+            document.getElementById("withdrawal-page").classList.add("hidden");
+            document.getElementById("mpesa-page").classList.remove("hidden");
+        }
+        function submitMpesa() {
+            let number = document.getElementById("mpesa-number").value;
+            let amount = parseFloat(document.getElementById("mpesa-amount").value);
+            if (!/^07\d{8}$/.test(number) || isNaN(amount) || amount < 1000 || amount > 5000000) {
+                alert("Invalid input. Please enter correct details.");
+                return;
+            }
+            balance -= amount;
+            updateBalance();
+            document.getElementById("mpesa-page").classList.add("hidden");
+            document.getElementById("success-message").textContent = `Your transfer of ${formatNumber(amount)} KES has been successfully paid to ${number} via Mpesa.`;
+            document.getElementById("success-page").classList.remove("hidden");
+
+            let historyList = document.getElementById("history-list");
+            let listItem = document.createElement("li");
+            listItem.textContent = `Sent ${formatNumber(amount)} KES to ${number} via Mpesa`;
+            historyList.appendChild(listItem);
+        }
+        function showTransactionHistory() {
+            document.getElementById("dashboard").classList.add("hidden");
+            document.getElementById("transaction-history").classList.remove("hidden");
         }
         function goBackToDashboard() {
-            document.getElementById("transaction-dashboard").classList.add("hidden");
+            document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
             document.getElementById("dashboard").classList.remove("hidden");
-            document.getElementById("loan-services").classList.remove("hidden"); // Show Loan & Services when back
+        }
+        function goBackToWithdrawal() {
+            document.getElementById("mpesa-page").classList.add("hidden");
+            document.getElementById("withdrawal-page").classList.remove("hidden");
         }
         updateBalance();
     </script>
